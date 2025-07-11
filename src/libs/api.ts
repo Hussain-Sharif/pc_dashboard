@@ -42,9 +42,9 @@ export const fetchMoviesData = async (): Promise<Movie[]> => {
     }
 
     const response = await fetch(
-      `https://api.themoviedb.org/3/trending/movie/week?api_key=${TMDB_API_KEY}`,{
+      `https://api.themoviedb.org/3/trending/movie/week?api_key=${TMDB_API_KEY}`,
+      {
         method: 'GET',
-        
       }
     );
 

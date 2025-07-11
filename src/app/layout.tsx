@@ -1,24 +1,22 @@
-import type { Metadata } from "next";
+'use client';
 
-import "./globals.css";
-
-
-export const metadata: Metadata = {
-  title: "Personalised Content Dashboard",
-  description: "Accumulate and manage your content based on preference",
-};
+import { store } from '../store/store';
+import { Provider } from 'react-redux';
+import './globals.css';
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`bg-gray-100 text-gray-900 antialiased`}
-      >
-        {children}
+      <body>
+        <Provider store={store}>
+          <div id="root">
+            {children}
+          </div>
+        </Provider>
       </body>
     </html>
   );
