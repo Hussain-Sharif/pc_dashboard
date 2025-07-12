@@ -52,6 +52,26 @@ const userPrefsSlice = createSlice({
     // UI preferences
     toggleDarkMode: (state) => {
       state.darkMode = !state.darkMode;
+       if (typeof window !== 'undefined') {
+        if (state.darkMode) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        // ✅ Persist to localStorage
+       localStorage.setItem('darkMode', JSON.stringify(state.darkMode));
+       }
+    },
+    // ✅ Add initialization from localStorage
+    setDarkModeFromStorage: (state, action: PayloadAction<boolean>) => {
+      state.darkMode = action.payload;
+      if (typeof window !== 'undefined') {
+        if (action.payload) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
     },
     
     // setDarkMode: (state, action: PayloadAction<boolean>) => {
@@ -89,6 +109,7 @@ export const {
   addCategory,
   removeCategory,
   toggleDarkMode,
+  setDarkModeFromStorage,
   // setDarkMode,
   setCardLayout,
   setCardsPerRow,
