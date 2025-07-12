@@ -15,7 +15,7 @@ export const useContent = () => {
   // Fetch content when categories change
   useEffect(() => {
     if (userPrefs.selectedCategories.length > 0) {
-      dispatch(fetchAllContent(userPrefs.selectedCategories[0]));
+      dispatch(fetchAllContent(userPrefs.selectedCategories));
     }
   }, [userPrefs.selectedCategories, dispatch]);
   

@@ -5,7 +5,7 @@ import { fetchNewsData, fetchMoviesData, fetchPostsData } from '../../libs/api';
 // Async thunks for API calls
 export const fetchNews = createAsyncThunk(
   'content/fetchNews',
-  async (category: string = 'technology') => {
+  async (category: string[] = ['technology']) => {
     const news = await fetchNewsData(category);
     return news;
   }
@@ -29,7 +29,7 @@ export const fetchPosts = createAsyncThunk(
 
 export const fetchAllContent = createAsyncThunk(
   'content/fetchAllContent',
-  async (category: string = 'technology') => {
+  async (category: string[] =[ 'technology']) => {
     const [news, movies, posts] = await Promise.all([
       fetchNewsData(category),
       fetchMoviesData(),
@@ -72,16 +72,20 @@ const initialState: ContentState = {
   trendingNews: [],
   movies: [],
   posts: [],
+
   favoriteNews: [],
   favoriteMovies: [],
   favoritePosts: [],
+
   newsLoading: false,
   moviesLoading: false,
   postsLoading: false,
   allContentLoading: false,
+
   newsError: null,
   moviesError: null,
   postsError: null,
+
   currentSection: 'personalized',
 };
 
@@ -236,7 +240,7 @@ const contentSlice = createSlice({
       })
       .addCase(fetchAllContent.rejected, (state, action) => {
         state.allContentLoading = false;
-        state.newsError = action.error.message || 'Failed to fetch content';
+        state.newsError = action.error.message || 'Failed to fetch content'; // rather than having another state I shooe to this state and we are commonly showing the errors based on any error comes 
       });
   },
 });

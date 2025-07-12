@@ -1,9 +1,6 @@
 import { store } from '../store/store';
 import { 
   fetchAllContent, 
-  fetchNews, 
-  fetchMovies, 
-  fetchPosts,
   setCurrentSection,
   addToFavorites
 } from '../store/slices/contentSlice';
@@ -36,7 +33,7 @@ export const testReduxStore = async () => {
   
   try {
     // Fetch all content
-    const result = await store.dispatch(fetchAllContent('technology'));
+    const result = await store.dispatch(fetchAllContent(['technology', 'sports']));
     console.log('Fetch All Content Result:', result);
     
     // Check state after fetch
@@ -56,27 +53,5 @@ export const testReduxStore = async () => {
     
   } catch (error) {
     console.error('❌ Error testing Redux:', error);
-  }
-};
-
-// Test individual API calls
-export const testIndividualFetches = async () => {
-  console.log('🔄 Testing Individual API Calls...');
-  
-  try {
-    // Test news fetch
-    const newsResult = await store.dispatch(fetchNews('technology'));
-    console.log('News fetch:', newsResult);
-    
-    // Test movies fetch
-    const moviesResult = await store.dispatch(fetchMovies());
-    console.log('Movies fetch:', moviesResult);
-    
-    // Test posts fetch
-    const postsResult = await store.dispatch(fetchPosts());
-    console.log('Posts fetch:', postsResult);
-    
-  } catch (error) {
-    console.error('❌ Error in individual fetches:', error);
   }
 };

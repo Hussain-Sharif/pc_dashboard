@@ -54,9 +54,9 @@ const userPrefsSlice = createSlice({
       state.darkMode = !state.darkMode;
     },
     
-    setDarkMode: (state, action: PayloadAction<boolean>) => {
-      state.darkMode = action.payload;
-    },
+    // setDarkMode: (state, action: PayloadAction<boolean>) => {
+    //   state.darkMode = action.payload;
+    // },
     
     // Layout preferences
     setCardLayout: (state, action: PayloadAction<'grid' | 'list'>) => {
@@ -89,7 +89,7 @@ export const {
   addCategory,
   removeCategory,
   toggleDarkMode,
-  setDarkMode,
+  // setDarkMode,
   setCardLayout,
   setCardsPerRow,
   setSearchQuery,
