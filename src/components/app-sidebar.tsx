@@ -26,13 +26,9 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-  useSidebar,
 } from "@/components/ui/sidebar"
 import { useContent } from "@/hooks/useContent"
-import { useAppDispatch, useAppSelector } from "@/store/store"
-import { toggleDarkMode } from "@/store/slices/userPrefsSlice"
-import { Switch } from "./ui/switch"
-import { useDarkMode } from "@/hooks/dark-mode"
+
 
 // This is sample data.
 const data = {
@@ -76,9 +72,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const {switchSection,content}=useContent()
- const {toggle,darkMode}=useDarkMode()
-
-  const {state}=useSidebar()
+ 
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -88,13 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={data.navMain} switchSection={switchSection} content={content} />
       </SidebarContent>
       <SidebarFooter>
-        <div className="flex items-center space-x-2">
-          <Switch
-            checked={darkMode}
-            onCheckedChange={toggle}
-          />
-          {state==='expanded' && <label>Dark Mode {darkMode ? "ON" : "OFF"}</label>}
-        </div>
+        
         <NavUser user={data.user} />
       </SidebarFooter>
       

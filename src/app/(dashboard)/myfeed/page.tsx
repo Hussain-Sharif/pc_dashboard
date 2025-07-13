@@ -3,7 +3,7 @@
 
 
 import { useEffect } from 'react';
-import { useContent } from '../../hooks/useContent';
+import { useContent } from '../../../hooks/useContent';
 // import { testReduxStore } from '../libs/test-redux';
 
 export default function MyFeed() {
