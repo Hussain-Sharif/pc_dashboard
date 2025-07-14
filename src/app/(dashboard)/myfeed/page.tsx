@@ -4,13 +4,15 @@
 
 import { useEffect } from 'react';
 import { useContent } from '../../../hooks/useContent';
+
 // import { testReduxStore } from '../libs/test-redux';
 
 export default function MyFeed() {
-  const { content,switchSection,currentData,isLoading,hasError,errorMessage } = useContent();
+  
+  const { content,switchSection,currentData,errorMessage } = useContent();
 //   const { content, userPrefs, currentData,switchSection, isLoading, hasError, errorMessage } = useContent();
   
-  console.log(isLoading,hasError,errorMessage,'Current Data:', currentData);
+  console.log(content.currentAllContentSituation,errorMessage,'Current Data:', currentData,[].flatMap(currentData, category => category));
   // for(const category of currentData.news){
   //   console.log(category.title)
   // }
@@ -23,14 +25,25 @@ export default function MyFeed() {
     }
   }, [content.currentSection, switchSection]);
 
+
+  const handleSuccessSituation=()=>{
+    return (
+      <>
+        HI suex
+      </>
+    )
+  }
+
   const handleApiSituation=()=>{
-    switch (key) {
-      case value:
-        
-        break;
-    
+    switch (content.currentAllContentSituation) {
+      case 'loading':
+        return 'Loading...';
+      case 'success':
+        return handleSuccessSituation()
+      case 'error':
+        return 'Loading...';
       default:
-        break;
+        return null;
     }
   }
 
@@ -38,8 +51,10 @@ export default function MyFeed() {
   return (
     <>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            <h1>My Feed</h1>
-            
+            <h1 className='text-2xl'>My Feed</h1>
+            <main>
+                {handleApiSituation()}
+            </main>
         </div>
     </>
   );

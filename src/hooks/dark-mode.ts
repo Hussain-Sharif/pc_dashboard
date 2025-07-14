@@ -12,11 +12,11 @@ export const useDarkMode = () => {
     const savedMode = localStorage.getItem('darkMode')
     if (savedMode !== null) {
       const isDark = savedMode === 'true'
-      dispatch(setDarkModeFromStorage(isDark)) // 🎯 USED HERE!
+      dispatch(setDarkModeFromStorage(isDark)) // 🎯 Action is USED HERE!
     } else {
       // Fallback to system preference
       const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      dispatch(setDarkModeFromStorage(systemPrefersDark)) // 🎯 USED HERE TOO!
+      dispatch(setDarkModeFromStorage(systemPrefersDark)) // 🎯 Action is USED HERE TOO!
     }
   }, [dispatch])
   

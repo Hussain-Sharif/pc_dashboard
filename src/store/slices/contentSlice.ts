@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { NewsArticle, Movie, SocialPost } from '../../libs/types';
+import { NewsArticle, Movie, SocialPost, ApiSituation } from '../../libs/types';
 import { fetchNewsData, fetchMoviesData, fetchPostsData } from '../../libs/api';
 
 // Async thunks for API calls
@@ -57,6 +57,9 @@ interface ContentState {
   moviesLoading: boolean;
   postsLoading: boolean;
   allContentLoading: boolean;
+
+  // Api Situation state
+  currentAllContentSituation: ApiSituation;
   
   // Error states
   newsError: string | null;
@@ -230,6 +233,7 @@ const contentSlice = createSlice({
         state.newsError = null;
         state.moviesError = null;
         state.postsError = null;
+        state.currentAllContentSituation='loading'
       })
       .addCase(fetchAllContent.fulfilled, (state, action) => {
         state.allContentLoading = false;
@@ -237,9 +241,11 @@ const contentSlice = createSlice({
         state.trendingNews = action.payload.news; // For now, same as personalized
         state.movies = action.payload.movies;
         state.posts = action.payload.posts;
+        state.currentAllContentSituation='success'
       })
       .addCase(fetchAllContent.rejected, (state, action) => {
         state.allContentLoading = false;
+        state.currentAllContentSituation='error'
         state.newsError = action.error.message || 'Failed to fetch content'; // rather than having another state I shooe to this state and we are commonly showing the errors based on any error comes 
       });
   },
