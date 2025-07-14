@@ -5,7 +5,7 @@ import {
   addToFavorites, 
   removeFromFavorites 
 } from '../store/slices/contentSlice';
-import { useEffect } from 'react';
+import { use, useCallback, useEffect } from 'react';
 
 export const useContent = () => {
   const dispatch = useAppDispatch();
@@ -20,9 +20,9 @@ export const useContent = () => {
   }, [userPrefs.selectedCategories, dispatch]);
   
   // Helper functions
-  const switchSection = (section: 'personalized' | 'trending' | 'favorites') => {
+  const switchSection = useCallback((section: 'personalized' | 'trending' | 'favorites') => {
     dispatch(setCurrentSection(section));
-  };
+  },[dispatch]);
   
   const addFavorite = (type: 'news' | 'movie' | 'post', item: any) => {
     dispatch(addToFavorites({ type, item }));
@@ -33,7 +33,7 @@ export const useContent = () => {
   };
   
   // Get current section data
-  const getCurrentSectionData = () => {
+  const getCurrentSectionData =useCallback( () => {
     switch (content.currentSection) {
       case 'personalized':
         return {
@@ -56,7 +56,7 @@ export const useContent = () => {
       default:
         return { news: [], movies: [], posts: [] };
     }
-  };
+  },[content.currentSection, content.personalizedNews, content.trendingNews, content.favoriteNews, content.movies, content.posts, content.favoriteMovies, content.favoritePosts]);
   
   return {
     // State

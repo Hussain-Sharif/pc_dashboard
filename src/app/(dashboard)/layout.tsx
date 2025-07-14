@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useDarkMode } from "@/hooks/dark-mode"; // Your custom dark mode hook
 import { MoonIcon, SunIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function DashboardLayout({
   children,
@@ -30,14 +31,9 @@ export default function DashboardLayout({
               <Input type="search" placeholder="Search Content..." />
             </div>
           </div>
-          <div className="flex items-center gap-2 border rounded-3xl p-2">
-            <Switch
-              id="dark-mode"
-              checked={darkMode}
-              onCheckedChange={toggle}
-            />
-            <label htmlFor="dark-mode" className="text-sm">{darkMode? <MoonIcon className="w-4 h-4"/>: <SunIcon className="w-4 h-4"/>}</label>
-          </div>
+          
+            <Button type="button" size={'icon'} onClick={toggle} className="rounded-full">{darkMode?  <SunIcon className="w-4 h-4"/> : <MoonIcon className="w-4 h-4"/>}</Button>
+          
         </header>
         <main className="flex-1 overflow-auto p-4">{children}</main>
       </SidebarInset>

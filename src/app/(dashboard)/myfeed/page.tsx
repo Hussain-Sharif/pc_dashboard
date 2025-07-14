@@ -7,7 +7,7 @@ import { useContent } from '../../../hooks/useContent';
 // import { testReduxStore } from '../libs/test-redux';
 
 export default function MyFeed() {
-  const { switchSection,currentData,isLoading,hasError,errorMessage } = useContent();
+  const { content,switchSection,currentData,isLoading,hasError,errorMessage } = useContent();
 //   const { content, userPrefs, currentData,switchSection, isLoading, hasError, errorMessage } = useContent();
   
   console.log(isLoading,hasError,errorMessage,'Current Data:', currentData);
@@ -17,8 +17,24 @@ export default function MyFeed() {
 
   // Test Redux on mount
   useEffect(() => {
-     switchSection('personalized')
-   }, [switchSection])
+    // ✅ Only switch if the section isn't already correct!
+    if (content.currentSection !== 'personalized') {
+      switchSection('personalized');
+    }
+  }, [content.currentSection, switchSection]);
+
+  const handleApiSituation=()=>{
+    switch (key) {
+      case value:
+        
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+
   return (
     <>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

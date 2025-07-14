@@ -50,3 +50,5 @@ export interface TMDBResponse {
 
 export type ContentType = 'news' | 'movie' | 'post';
 export type Category = 'technology' | 'sports' | 'business' | 'health' | 'entertainment';
+
+export type ApiSituation = 'initial' | 'loading' | 'success' | 'error';

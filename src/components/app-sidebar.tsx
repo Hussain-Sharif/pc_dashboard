@@ -30,6 +30,7 @@ import {
 import { useContent } from "@/hooks/useContent"
 
 
+
 // This is sample data.
 const data = {
   user: {
@@ -39,9 +40,8 @@ const data = {
   },
   teams: [
     {
-      name: "PCD-Personalized",
-      logo: GalleryVerticalEnd,
-      plan: "Content Dashboard",
+      name: "Nexus",
+      plan: "Personalized Content Dashboard",
     },
   ],
   navMain: [
