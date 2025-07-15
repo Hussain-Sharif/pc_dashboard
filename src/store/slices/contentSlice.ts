@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { NewsArticle, Movie, SocialPost, ApiSituation } from '../../libs/types';
+import { NewsArticle, Movie, SocialPost, ApiSituation, UnifiedCardData } from '../../libs/types';
 import { fetchNewsData, fetchMoviesData, fetchPostsData } from '../../libs/api';
+import { mapMovieToUnified, mapNewsToUnified, mapPostToUnified } from '@/libs/mappers';
 
 // Async thunks for API calls
 export const fetchNews = createAsyncThunk(
@@ -41,6 +42,7 @@ export const fetchAllContent = createAsyncThunk(
 
 // Content state interface
 interface ContentState {
+  unifiedContent : UnifiedCardData[];
   // Data
   personalizedNews: NewsArticle[];
   trendingNews: NewsArticle[];
@@ -71,6 +73,7 @@ interface ContentState {
 }
 
 const initialState: ContentState = {
+  unifiedContent : [],
   personalizedNews: [],
   trendingNews: [],
   movies: [],
@@ -84,6 +87,8 @@ const initialState: ContentState = {
   moviesLoading: false,
   postsLoading: false,
   allContentLoading: false,
+
+  currentAllContentSituation:'initial',
 
   newsError: null,
   moviesError: null,
@@ -242,6 +247,18 @@ const contentSlice = createSlice({
         state.movies = action.payload.movies;
         state.posts = action.payload.posts;
         state.currentAllContentSituation='success'
+
+        const mappedNews = action.payload.news.map(mapNewsToUnified);
+        const mappedMovies = action.payload.movies.map(mapMovieToUnified);
+        const mappedPosts = action.payload.posts.map(mapPostToUnified);
+
+        // Now you have a consistent array of all your content!
+        const allContent = [...mappedNews, ...mappedMovies, ...mappedPosts];
+
+        // You can sort them all by timestamp to create a true chronological feed
+        allContent.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+        state.unifiedContent = allContent;
       })
       .addCase(fetchAllContent.rejected, (state, action) => {
         state.allContentLoading = false;

@@ -19,7 +19,7 @@ export const fetchNewsData = async (categories: string[] =[ 'technology']): Prom
     const finalData=categories.map(async (category) => {
       const response = await fetch(
         `https://newsapi.org/v2/top-headlines?category=${category}&country=us&apiKey=${NEWS_API_KEY}`
-      );
+      );   
   
       if (!response.ok) {
         throw new Error(`News Api error! status: ${response.status}`);
@@ -27,12 +27,20 @@ export const fetchNewsData = async (categories: string[] =[ 'technology']): Prom
   
       const data: NewsApiResponse = await response.json();
       
-      // Filtering out articles with missing images or titles
-      return data.articles.filter(article => 
+      const finalData=data.articles.filter(article => 
         article.urlToImage && 
         article.title && 
         article.title !== '[Removed]'
-      );
+      )
+      console.log("-->",finalData.map((article:NewsArticle,ind:number) => ({
+        ...article,
+        id : category+ind 
+      })))
+      // Filtering out articles with missing images or titles
+      return finalData.map((article:NewsArticle,ind:number) => ({
+        ...article,
+        id : category+ind 
+      }))
     })
 
     const data = await Promise.all(finalData);
@@ -93,7 +101,7 @@ export const fetchPostsData = async (): Promise<SocialPost[]> => {
 // Combined fetch function for all content types
 export const fetchAllContent = async (categories: string[] = ['business']) => {
   const promises = [
-    fetchNewsData(categories ),
+    fetchNewsData(categories),
     fetchMoviesData(),
     fetchPostsData()
   ];

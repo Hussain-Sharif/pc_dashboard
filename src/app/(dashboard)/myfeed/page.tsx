@@ -12,7 +12,7 @@ export default function MyFeed() {
   const { content,switchSection,currentData,errorMessage } = useContent();
 //   const { content, userPrefs, currentData,switchSection, isLoading, hasError, errorMessage } = useContent();
   
-  console.log(content.currentAllContentSituation,errorMessage,'Current Data:', currentData,[].flatMap(currentData, category => category));
+  console.log(content.currentAllContentSituation,errorMessage,'Current Data:',content.unifiedContent);
   // for(const category of currentData.news){
   //   console.log(category.title)
   // }
