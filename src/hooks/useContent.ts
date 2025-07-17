@@ -3,13 +3,15 @@ import {
   fetchAllContent, 
   setCurrentSection, 
   addToFavorites, 
-  removeFromFavorites 
+  removeFromFavorites, 
+  ContentState
 } from '../store/slices/contentSlice';
 import { use, useCallback, useEffect } from 'react';
+import { shuffleCards } from '@/libs/shuffleCards';
 
 export const useContent = () => {
   const dispatch = useAppDispatch();
-  const content = useAppSelector(state => state.content);
+  const content:ContentState = useAppSelector(state => state.content);
   const userPrefs = useAppSelector(state => state.userPrefs);
   
   // Fetch content when categories change

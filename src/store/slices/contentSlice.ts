@@ -41,7 +41,7 @@ export const fetchAllContent = createAsyncThunk(
 );
 
 // Content state interface
-interface ContentState {
+export interface ContentState {
   unifiedContent : UnifiedCardData[];
   // Data
   personalizedNews: NewsArticle[];

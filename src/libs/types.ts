@@ -70,3 +70,5 @@ export interface UnifiedCardData {
   metaPrimary?: string; // movie-rating, news-localDate for publication of news
   metaSecondary?: string; // movie-original_language, news-sourceName
 }
+
+export type FilterOptions='shuffle' | 'news' | 'movies' | 'posts';
