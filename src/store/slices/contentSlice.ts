@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { NewsArticle, Movie, SocialPost, ApiSituation, UnifiedCardData } from '../../libs/types';
 import { fetchNewsData, fetchMoviesData, fetchPostsData } from '../../libs/api';
 import { mapMovieToUnified, mapNewsToUnified, mapPostToUnified } from '@/libs/mappers';
+import { NewsCategory } from '@/constants/newsCategories';
+import { MovieGenre } from '@/constants/movieGenreOptions';
 
 // Async thunks for API calls
 export const fetchNews = createAsyncThunk(
@@ -30,7 +32,7 @@ export const fetchPosts = createAsyncThunk(
 
 export const fetchAllContent = createAsyncThunk(
   'content/fetchAllContent',
-  async (category: string[] =[ 'technology']) => {
+  async (category: string | NewsCategory = '') => {
     const [news, movies, posts] = await Promise.all([
       fetchNewsData(category),
       fetchMoviesData(),
@@ -70,6 +72,7 @@ export interface ContentState {
   
   // Current section
   currentSection: 'personalized' | 'trending' | 'favorites';
+
 }
 
 const initialState: ContentState = {
@@ -95,6 +98,8 @@ const initialState: ContentState = {
   postsError: null,
 
   currentSection: 'personalized',
+
+
 };
 
 const contentSlice = createSlice({
@@ -183,7 +188,10 @@ const contentSlice = createSlice({
       state.newsError = null;
       state.moviesError = null;
       state.postsError = null;
-    }
+    },
+
+    
+
   },
   extraReducers: (builder) => {
     // Fetch News
@@ -258,6 +266,7 @@ const contentSlice = createSlice({
         // You can sort them all by timestamp to create a true chronological feed
         allContent.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
+        console.log('All Content:', state.unifiedContent);
         state.unifiedContent = allContent;
       })
       .addCase(fetchAllContent.rejected, (state, action) => {

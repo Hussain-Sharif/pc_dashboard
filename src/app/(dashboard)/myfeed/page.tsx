@@ -8,7 +8,7 @@ import { NewsCard } from '@/components/newsCard';
 import { PostCard } from '@/components/postCard';
 import { shuffleCards } from '@/constants/shuffleCards';
 import { Button } from '@/components/ui/button';
-import { Filter, FilterIcon, Newspaper, ShuffleIcon, Video, Waypoints } from 'lucide-react';
+import { ChevronDown, Filter, FilterIcon, Newspaper, ShuffleIcon, Video, Waypoints } from 'lucide-react';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { listOfNewsCategories, NewsCategory } from '@/constants/newsCategories';
@@ -18,11 +18,13 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Checkbox } from '@/components/ui/checkbox';
 
 export default function MyFeed() {
-  const { content,switchSection,errorMessage } = useContent();
+  const { content,userPrefs,switchSection,errorMessage ,updateCurrentNewsCategory,updateCurrentGenre} = useContent();
   const [currentOrderOfData, setCurrentOrderOfData] = useState<UnifiedCardData[]>([]);
   const [currentFilterOption, setCurrentFilterOption] = useState<FilterOptions>('shuffle');
-  const [currentNewsCategory, setCurrentNewsCategory] = useState<NewsCategory|string>('');
-  const [currentGenres,setCurrentGenres] = useState<MovieGenre[]>([]);
+  // const [currentNewsCategory, setCurrentNewsCategory] = useState<NewsCategory|string>('');
+  // const [currentGenres,setCurrentGenres] = useState<MovieGenre[]>([]);
+
+  const {currentGenres,currentNewsCategory}=userPrefs
 
   // Sync local state with Redux data when unifiedContent changes!
   useEffect(() => {
@@ -44,6 +46,8 @@ export default function MyFeed() {
     if (content.currentSection !== 'personalized') {
       switchSection('personalized');
     }
+    updateCurrentNewsCategory('')
+    updateCurrentGenre([])
   }, [content.currentSection, switchSection]);
 
   const handleSuccessSituation = () => {
@@ -70,7 +74,13 @@ export default function MyFeed() {
   const handleApiSituation = () => {
     switch (content.currentAllContentSituation) {
       case 'loading':
-        return 'Loading...';
+        return <>
+          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                <div className="bg-muted/50 aspect-video rounded-xl" />
+                <div className="bg-muted/50 aspect-video rounded-xl" />
+                <div className="bg-muted/50 aspect-video rounded-xl" />
+            </div>
+        </>
       case 'success':
         return handleSuccessSituation();
       case 'error':
@@ -89,8 +99,7 @@ export default function MyFeed() {
 
         <ToggleGroup variant="outline" type="single" value={currentFilterOption} onValueChange={(value)=>{
           setCurrentFilterOption(value)
-          setCurrentNewsCategory('')
-          setCurrentGenres([])
+          
         }}>
       <ToggleGroupItem value="shuffle" aria-label='shuffle'>
 
@@ -143,7 +152,7 @@ export default function MyFeed() {
 
                       <p className='text-sm text-muted-foreground mr-2'> Category:</p>
 
-                      <Select value={currentNewsCategory} onValueChange={setCurrentNewsCategory} >
+                      <Select value={currentNewsCategory} onValueChange={updateCurrentNewsCategory} >
                         <SelectTrigger className="max-w-2xl">
                           <SelectValue placeholder="Select a News category" />
                         </SelectTrigger>
@@ -178,8 +187,8 @@ export default function MyFeed() {
                             }
                             </div>
                             :
-                            <div className=' border rounded-xl p-2 '>
-                              Select Movie Genres
+                            <div className=' border rounded-xl p-2 cursor-pointer'>
+                              Select Movie Genres <ChevronDown className='w-3 h-3'/>
                             </div>
                           }
                         </PopoverTrigger>
@@ -192,9 +201,9 @@ export default function MyFeed() {
                                 checked={currentGenres.some((genre:MovieGenre) => genre.id === category.id)}
                                 onCheckedChange={(checked) => {
                                   if (checked) {
-                                    setCurrentGenres([...currentGenres, category]);
+                                    updateCurrentGenre([...currentGenres, category]);
                                   } else {
-                                    setCurrentGenres(currentGenres.filter((genre:MovieGenre) => genre.id !== category.id));
+                                    updateCurrentGenre(currentGenres.filter((genre:MovieGenre) => genre.id !== category.id));
                                   }
                                 }}
                                 />

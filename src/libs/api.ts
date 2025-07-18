@@ -1,50 +1,45 @@
 
 // lib/api.ts
+import { NewsCategory } from '@/constants/newsCategories';
 import { NewsArticle, Movie, SocialPost, NewsApiResponse, TMDBResponse } from './types';
 
 const NEWS_API_KEY = process.env.NEXT_PUBLIC_NEWS_API_KEY;
 const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 // News API with proper error handling
-export const fetchNewsData = async (categories: string[] =[ 'technology']): Promise<NewsArticle[]> => {
+export const fetchNewsData = async (category: string | NewsCategory =''): Promise<NewsArticle[]> => {
   try {
     if (!NEWS_API_KEY) {
       throw new Error('News API key is missing');
     }
+    const feedNewsAPI=`https://newsapi.org/v2/top-headlines?category=${category}&country=us&q=&apiKey=${NEWS_API_KEY}`
+    const response = await fetch(
+      `${feedNewsAPI}`
+    );   
 
-    if (!categories.length) {
-      throw new Error('Categories are missing');
+  
+    if (!response.ok) {
+      throw new Error(`News Api error! status: ${response.status}`);
     }
 
-    const finalData=categories.map(async (category) => {
-      const response = await fetch(
-        `https://newsapi.org/v2/top-headlines?category=${category}&country=us&apiKey=${NEWS_API_KEY}`
-      );   
-  
-      if (!response.ok) {
-        throw new Error(`News Api error! status: ${response.status}`);
-      }
-  
-      const data: NewsApiResponse = await response.json();
-      
-      const finalData=data.articles.filter(article => 
-        article.urlToImage && 
-        article.title && 
-        article.title !== '[Removed]'
-      )
-      console.log("-->",finalData.map((article:NewsArticle,ind:number) => ({
-        ...article,
-        id : category+ind 
-      })))
-      // Filtering out articles with missing images or titles
-      return finalData.map((article:NewsArticle,ind:number) => ({
-        ...article,
-        id : category+ind 
-      }))
-    })
+    const data: NewsApiResponse = await response.json();
+   
+    const finalData=data.articles.filter(article => 
+      article.urlToImage && 
+      article.title && 
+      article.title !== '[Removed]'
+    )
+    // console.log("-->",finalData.map((article:NewsArticle,ind:number) => ({
+    //   ...article,
+    //   id : "news"+ind 
+    // })))
+    // Filtering out articles with missing images or titles
+    return finalData.map((article:NewsArticle,ind:number) => ({
+      ...article,
+      id : "news"+ind 
+    }))
 
-    const data = await Promise.all(finalData);
-    return data.flat();
+    
   } catch (error) {
     console.error('Error fetching news:', error);
     return [];

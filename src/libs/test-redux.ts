@@ -5,7 +5,7 @@ import {
   addToFavorites
 } from '../store/slices/contentSlice';
 import { 
-  setSelectedCategories, 
+  setCurrentNewsCategory, 
   toggleDarkMode, 
   setSearchQuery 
 } from '../store/slices/userPrefsSlice';
@@ -18,7 +18,7 @@ export const testReduxStore = async () => {
   console.log('Initial State:', store.getState());
   
   // Test user preferences
-  store.dispatch(setSelectedCategories(['technology', 'sports']));
+  store.dispatch(setCurrentNewsCategory('technology'));
   store.dispatch(toggleDarkMode());
   store.dispatch(setSearchQuery('React'));
   

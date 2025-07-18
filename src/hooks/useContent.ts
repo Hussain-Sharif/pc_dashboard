@@ -4,10 +4,14 @@ import {
   setCurrentSection, 
   addToFavorites, 
   removeFromFavorites, 
-  ContentState
+  ContentState,
+ 
 } from '../store/slices/contentSlice';
 import { use, useCallback, useEffect } from 'react';
 import { shuffleCards } from '@/constants/shuffleCards';
+import { NewsCategory } from '@/constants/newsCategories';
+import { MovieGenre } from '@/constants/movieGenreOptions';
+import { setCurrentGenres, setCurrentNewsCategory } from '@/store/slices/userPrefsSlice';
 
 export const useContent = () => {
   const dispatch = useAppDispatch();
@@ -16,10 +20,8 @@ export const useContent = () => {
   
   // Fetch content when categories change
   useEffect(() => {
-    if (userPrefs.selectedCategories.length > 0) {
-      dispatch(fetchAllContent(userPrefs.selectedCategories));
-    }
-  }, [userPrefs.selectedCategories, dispatch]);
+    dispatch(fetchAllContent(userPrefs.currentNewsCategory));
+  }, [userPrefs.currentNewsCategory, dispatch]);
   
   // Helper functions
   const switchSection = useCallback((section: 'personalized' | 'trending' | 'favorites') => {
@@ -59,7 +61,15 @@ export const useContent = () => {
         return { news: [], movies: [], posts: [] };
     }
   },[content.currentSection, content.personalizedNews, content.trendingNews, content.favoriteNews, content.movies, content.posts, content.favoriteMovies, content.favoritePosts]);
-  
+
+  const updateCurrentNewsCategory=(category:NewsCategory| string) => {
+    dispatch(setCurrentNewsCategory(category));
+  }
+
+  const updateCurrentGenre=(genre:MovieGenre[])=>{
+      dispatch(setCurrentGenres(genre))
+  }
+
   return {
     // State
     content,
@@ -71,6 +81,10 @@ export const useContent = () => {
     switchSection,
     addFavorite,
     removeFavorite,
+
+    //Filters in My Feed page
+    updateCurrentNewsCategory,
+    updateCurrentGenre,
     
     // Helpers
     hasError: !!(content.newsError || content.moviesError || content.postsError),

@@ -1,9 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Category } from '../../libs/types';
+import { NewsCategory } from '@/constants/newsCategories';
+import { MovieGenre } from '@/constants/movieGenreOptions';
 
 interface UserPrefsState {
-  // News categories
-  selectedCategories: Category[];
+  
+  // filters for Personalized/My Feed Page
+  currentNewsCategory: NewsCategory | string;
+  currentGenres: MovieGenre[];
   
   // UI preferences
   darkMode: boolean;
@@ -20,12 +24,13 @@ interface UserPrefsState {
 }
 
 const initialState: UserPrefsState = {
-  selectedCategories: ['technology'],
   darkMode: false,
   cardLayout: 'grid',
   cardsPerRow: 3,
   searchQuery: '',
   itemsPerPage: 20,
+    currentNewsCategory:'',
+  currentGenres:[]
 };
 
 const userPrefsSlice = createSlice({
@@ -33,20 +38,12 @@ const userPrefsSlice = createSlice({
   initialState,
   reducers: {
     // Category management
-    setSelectedCategories: (state, action: PayloadAction<Category[]>) => {
-      state.selectedCategories = action.payload;
+    setCurrentNewsCategory: (state, action: PayloadAction<NewsCategory | string>) => {
+      state.currentNewsCategory = action.payload;
     },
-    
-    addCategory: (state, action: PayloadAction<Category>) => {
-      if (!state.selectedCategories.includes(action.payload)) {
-        state.selectedCategories.push(action.payload);
-      }
-    },
-    
-    removeCategory: (state, action: PayloadAction<Category>) => {
-      state.selectedCategories = state.selectedCategories.filter(
-        cat => cat !== action.payload
-      );
+
+    setCurrentGenres: (state, action: PayloadAction<MovieGenre[]>) => {
+      state.currentGenres = action.payload;
     },
     
     // UI preferences
@@ -105,9 +102,8 @@ const userPrefsSlice = createSlice({
 });
 
 export const {
-  setSelectedCategories,
-  addCategory,
-  removeCategory,
+  setCurrentGenres,
+  setCurrentNewsCategory,
   toggleDarkMode,
   setDarkModeFromStorage,
   // setDarkMode,
