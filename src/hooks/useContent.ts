@@ -7,7 +7,7 @@ import {
   ContentState
 } from '../store/slices/contentSlice';
 import { use, useCallback, useEffect } from 'react';
-import { shuffleCards } from '@/libs/shuffleCards';
+import { shuffleCards } from '@/constants/shuffleCards';
 
 export const useContent = () => {
   const dispatch = useAppDispatch();

@@ -6,15 +6,23 @@ import { FilterOptions, UnifiedCardData } from '@/libs/types';
 import { MovieCard } from '@/components/MovieCard';
 import { NewsCard } from '@/components/newsCard';
 import { PostCard } from '@/components/postCard';
-import { shuffleCards } from '@/libs/shuffleCards';
+import { shuffleCards } from '@/constants/shuffleCards';
 import { Button } from '@/components/ui/button';
-import { Filter, Newspaper, ShuffleIcon, Video, Waypoints } from 'lucide-react';
+import { Filter, FilterIcon, Newspaper, ShuffleIcon, Video, Waypoints } from 'lucide-react';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { listOfNewsCategories, NewsCategory } from '@/constants/newsCategories';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { listOfMovieGenres, MovieGenre } from '@/constants/movieGenreOptions';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function MyFeed() {
   const { content,switchSection,errorMessage } = useContent();
   const [currentOrderOfData, setCurrentOrderOfData] = useState<UnifiedCardData[]>([]);
   const [currentFilterOption, setCurrentFilterOption] = useState<FilterOptions>('shuffle');
+  const [currentNewsCategory, setCurrentNewsCategory] = useState<NewsCategory|string>('');
+  const [currentGenres,setCurrentGenres] = useState<MovieGenre[]>([]);
 
   // Sync local state with Redux data when unifiedContent changes!
   useEffect(() => {
@@ -72,12 +80,18 @@ export default function MyFeed() {
     }
   }
 
+  console.log("Main Filters", currentFilterOption,currentGenres,currentNewsCategory);
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <h1 className='text-2xl font-bold'>My Feed</h1>
-      <div className='flex flex-row gap-0'>
+      <div className='flex justify-between items-center flex-row gap-0'>
 
-        <ToggleGroup variant="outline" type="single" value={currentFilterOption} onValueChange={setCurrentFilterOption}>
+        <ToggleGroup variant="outline" type="single" value={currentFilterOption} onValueChange={(value)=>{
+          setCurrentFilterOption(value)
+          setCurrentNewsCategory('')
+          setCurrentGenres([])
+        }}>
       <ToggleGroupItem value="shuffle" aria-label='shuffle'>
 
           <ShuffleIcon/>
@@ -94,6 +108,111 @@ export default function MyFeed() {
       </ToggleGroupItem>
     
     </ToggleGroup>
+
+      <div>
+        <Sheet>
+          <SheetTrigger><FilterIcon className='text-foreground cursor-pointer h-6 w-6'/></SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Filter the Cards!!</SheetTitle>
+              <SheetDescription>
+                {
+                  (currentFilterOption==='posts') &&
+                  "As of Now there are no filters for Social Media Post Cards"
+                }
+                {
+                  (currentFilterOption==='news' || currentFilterOption==='shuffle') &&
+                  "Filter News Card by Category " 
+                }
+                
+                {
+                  (currentFilterOption==='shuffle') &&
+                  "& Movie Cards by Genre" 
+                }
+                {
+                  (currentFilterOption==='movies') &&
+                  "Filter Movie Cards by Genre" 
+                }
+
+              </SheetDescription>
+            </SheetHeader>
+                {
+                  (currentFilterOption==='news' || currentFilterOption==='shuffle') &&
+                  (
+                    <div className=' w-full flex justify-start items-center pl-4 gap-4'>
+
+                      <p className='text-sm text-muted-foreground mr-2'> Category:</p>
+
+                      <Select value={currentNewsCategory} onValueChange={setCurrentNewsCategory} >
+                        <SelectTrigger className="max-w-2xl">
+                          <SelectValue placeholder="Select a News category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {
+                            listOfNewsCategories.map((category:NewsCategory) => (
+                              <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
+                            ))
+                          }
+                        </SelectContent>
+                      </Select>
+                    
+                    </div>
+                  )
+                }
+                {
+                  (currentFilterOption==='movies' || currentFilterOption==='shuffle') &&
+                  (
+                    <div className=' w-full flex justify-start items-center p-2 pl-4 gap-4'>
+
+                      <p className='text-sm text-muted-foreground mr-2'> Movie Genre:</p>
+
+                      <Popover >
+                        <PopoverTrigger>
+                          {
+                            currentGenres.length>0 ?
+                            <div className='flex flex-row flex-wrap border rounded-xl p-2 gap-2 min-w-fit max-w-[70%]'>
+                              {
+                              currentGenres.map((genre:MovieGenre) => (
+                                <div className='text-sm bg-accent rounded-3xl px-2' key={genre.id} >{genre.name}</div>
+                              ))
+                            }
+                            </div>
+                            :
+                            <div className=' border rounded-xl p-2 '>
+                              Select Movie Genres
+                            </div>
+                          }
+                        </PopoverTrigger>
+                        <PopoverContent className='w-[200px] p-2 flex flex-wrap gap-2'>
+                           {
+                            listOfMovieGenres.map((category:MovieGenre) => (
+                              <label key={category.id} htmlFor={`${category.id}`} className='flex flex-row gap-2'>
+                                <Checkbox 
+                                id={`${category.id}`} 
+                                checked={currentGenres.some((genre:MovieGenre) => genre.id === category.id)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setCurrentGenres([...currentGenres, category]);
+                                  } else {
+                                    setCurrentGenres(currentGenres.filter((genre:MovieGenre) => genre.id !== category.id));
+                                  }
+                                }}
+                                />
+                                <span className='text-sm '>{category.name}</span>
+                              </label>
+                            ))
+                          }
+                        </PopoverContent>
+                      </Popover>
+
+                      
+                    </div>
+                  )
+                }
+
+          </SheetContent>
+        </Sheet>
+      </div>
      
       </div>
       <main>

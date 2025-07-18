@@ -1,4 +1,4 @@
-import { UnifiedCardData } from "./types";
+import { UnifiedCardData } from "../libs/types";
 
 
 export const shuffleCards=(dataArray:UnifiedCardData[]):UnifiedCardData[]=>{
